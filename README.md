@@ -15,7 +15,7 @@ The only external dependency is Jquery standard library which is not included in
 
 How to use
 ------
-Load the page, wait for the elements to be displayed and then click of any to change camera orientation
+Load the page, wait for the elements to be displayed and then click of any to change camera orientation. Demo can be run at http://experiments.midkemia.fr/threejsExperiment/
 
 Next steps
 ------
