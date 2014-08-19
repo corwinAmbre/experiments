@@ -1,0 +1,180 @@
+/**
+* Main stylesheet file for the slide view.
+*
+* @author Sebastien Domergue: https://github.com/corwinAmbre
+* @version 0.1
+*/
+
+/**
+* Main display section
+*/
+body {
+	font-family: Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	margin: 0;
+}
+
+core-animated-pages {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	overflow: hidden;
+}
+
+section > div {
+	height: 100%;
+}
+
+/**
+* Bottom nav-bar (hidden by default)
+*/
+#nav-bar {
+	bottom: 0px;
+	position: absolute;
+	width: 99.2%;
+	background-color: blue;
+	color: white;
+	text-align: center;
+	padding: 5px;
+	display: none;
+}
+
+#nav-bar #leftContainer {
+	float: left;
+}
+#nav-bar #rightContainer {
+	float: right;
+}
+
+#nav-bar #currentSlideProgressBar::shadow #progressContainer {
+	background-color: white;
+}
+
+/**
+* Slide grid section (hidden by default)
+*/
+#slideCarousel {
+	position: absolute;
+	z-index: 7000;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	overflow-x: hidden;
+	overflow-y: auto;
+	background: rgba(0, 0, 0, 0.8);
+	display: flex;
+	flex-flow: row wrap;
+	align-items: center;
+	justify-content: center;
+}
+
+#slideCarousel > section {
+	height: 50%;
+	width: 40%;
+	margin: 2%;
+}
+
+#slideCarousel.hidden {
+	display: none;
+}
+
+/**
+* Slide theme section
+* Change theme by editing this section only
+*/
+
+/** General slide layout 
+* White background, black text color
+* Vertically and horizontally align contents
+*/
+core-animated-pages {
+	font-size: 2em;
+}
+section > div {
+	color: black;
+	background-color: white;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	justify-content: center;
+	padding-left: 5%;
+}
+section > div > header {
+	position: absolute;
+	font-size: 2.1em;
+	top: 0;
+	right: 0;
+	left: 0;
+	background-color: #3e50b4;
+	color: white;
+	padding-left: 2%;
+	padding-right: 2%;
+	height: 2.2 em;
+}
+section > div > header + content {
+	position: absolute;
+	top: 3em;
+	left: 0;
+	right: 0;
+	padding-left: 2%;
+	padding-right: 2%;
+}
+section > div > footer {
+	position: absolute;
+	font-size: 1.9em;
+	right: 0;
+	left: 0;
+	bottom: 0;
+	background-color: #3e50b4;
+	color: white;
+	padding-left: 2%;
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+section table.table tbody td {
+	padding-top: 5px;
+	padding-right: 20px;
+}
+
+/** Title slide layout
+* Blue background, white text color
+* Vertically centered and right align contents (padding-right added to avoid text stuck on the right)
+*/
+section.title > div {
+	background-color: #3e50b4;
+	color: white;
+	align-items: flex-end;
+	padding-right: 5%;
+}
+section.title h1 {
+	font-size: 88px;
+	font-weight: 300;
+}
+section.title summary {
+	font-size: 62px;
+	font-weight: 400;
+	opacity: 0.8;	
+}
+section.title a {
+	color: white;
+}
+
+/** Definition of text size inside slide grid */
+#slideCarousel {
+	font-size: 11px;
+}
+#slideCarousel section {
+	overflow: auto;
+	background-color: white;
+}
+#slideCarousel section h1{
+	z-index: 7100;
+}
+#slideCarousel section.title h1 {
+	font-size: 13px;
+}
+#slideCarousel section.title summary {
+	font-size: 13px;
+}

@@ -1,0 +1,100 @@
+<!--
+	Polymer element to handle animated list on slide.
+	By default, all elements of an animated-list have opacity set to 0. When firing next method, the first element
+	with such opacity is fade in to an opacity of 1. When firing previous method, the last element with an opacity of 1
+	is fade out to an opacity of 0.
+
+	@author Sebastien Domergue: https://github.com/corwinAmbre
+	@version 0.1
+	
+	Polymer dependencies:
+		- Polymer: core
+		- Core animation: for fadeIn and fadeOut effects
+	
+	Usage:
+		<animated-list>
+			<li>An element</li>
+			<li>Another element</li>
+			<li>...</li>
+		</animated-list>
+-->
+<link rel="import" href="../../polymer/polymer/polymer.html">
+<link rel="import" href="../../polymer/core-animation/core-animation.html">
+
+<polymer-element name="animated-list">
+	<template>
+		<ul>
+			<shadow></shadow>
+		</ul>
+	</template>
+	
+	<script>
+		Polymer('animated-list', {
+			// Transitions declarations
+			// FadeIn will make an element to be displayed in 500ms
+			fadeIn: function(element) {
+				var animation = new CoreAnimation();
+				animation.duration = 500;
+				animation.fill = "both";
+				animation.keyframes = [
+					{opacity: 0},
+					{opacity: 1}
+				];
+				animation.target = element;
+				animation.play();
+			},
+			// FadeIn will make an element to disapear in 500ms
+			fadeOut: function(element) {
+				var animation = new CoreAnimation();
+				animation.duration = 500;
+				animation.fill = "both";
+				animation.keyframes = [
+					{opacity: 1},
+					{opacity: 0}
+				];
+				animation.target = element;
+				animation.play();
+			},
+			
+			// On local DOM ready, read the dom to detect how many elements are embedded
+			domReady: function() {
+				var children = this.querySelectorAll('li');
+				Array.prototype.forEach.call(children, function(c) {
+					c.style.opacity = 0;
+				});
+			},
+			
+			/**
+			* Apply the fadeIn animation to the first object with an opacity of 0
+			* @return {{Boolean}} true if one element if one has been fadeIn, false otherwise
+			*/
+			next: function() {
+				var children = this.querySelectorAll('li');
+				for(var c = 0; c < children.length; c += 1) {
+					window.getComputedStyle(children[c]);
+					if(window.getComputedStyle(children[c]).opacity == 0) {
+						this.fadeIn(children[c]);
+						return true;
+					}
+				}
+				return false;
+			},
+			
+			/**
+			* Apply the fadeOut animation to the last object with an opacity of 1
+			* @return {{Boolean}} true if one element if one has been fadeOut, false otherwise
+			*/
+			previous: function() {
+				var children = this.querySelectorAll('li');
+				for(var c = children.length - 1; c >= 0; c -= 1) {
+					window.getComputedStyle(children[c]);
+					if(window.getComputedStyle(children[c]).opacity == 1) {
+						this.fadeOut(children[c]);
+						return true;
+					}
+				}
+				return false;
+			}
+		});
+	</script>
+</polymer-element>

@@ -1,0 +1,203 @@
+<!doctype html>
+<html>
+<head>
+	<!--
+		Polymer Experiment: slideshow
+		Use polymer and material design to build a slideshow.
+		
+		@author Sebastien Domergue: https://github.com/corwinAmbre
+		@version 0.1
+	-->
+	<title>Experiments - Polymer</title>
+	<!-- JQuery import -->
+	<script src="./js/jquery-1.11.0.min.js"></script>
+
+	<!-- Polymer imports -->
+	<!-- Slide framework imports -->
+	<!-- Platform -->
+	<script src="./polymer/platform/platform.js"></script>
+	<!-- Core -->
+	<link rel="import" href="./polymer/core-animated-pages/core-animated-pages.html">
+	<link rel="import" href="./polymer/core-animated-pages/transitions/slide-from-right.html">
+	<link rel="import" href="./polymer/core-icon-button/core-icon-button.html">
+	<!-- Paper -->
+	<link rel="import" href="./polymer/paper-fab/paper-fab.html">
+	<link rel="import" href="./polymer/paper-progress/paper-progress.html">
+	<link rel="import" href="./polymer/paper-input/paper-input.html">
+	<link rel="import" href="./polymer/paper-dialog/paper-dialog.html">
+	<link rel="import" href="./polymer/paper-button/paper-button.html">
+	<link rel="import" href="./polymer/paper-shadow/paper-shadow.html">
+	<!-- Font -->
+	<link rel="import" href="./polymer/font-roboto/roboto.html">
+	<!-- Import for slides contents -->
+	<link rel="import" href="./polymer/paper-checkbox/paper-checkbox.html">
+	<link rel="import" href="./polymer/paper-toggle-button/paper-toggle-button.html">
+	<link rel="import" href="./polymer/paper-slider/paper-slider.html">
+  
+	<!-- Experiments imports -->
+	<link rel="stylesheet" href="./css/layout.css">
+	<link rel="import" href="./myelements/animated-list/animated-list.html">
+	<script src="./js/main.js"></script>
+	
+</head>
+<body unresolved>
+
+	<!-- Main section, contains slides definitions -->
+	<core-animated-pages onclick="slides.next();" transitions="slide-from-right" id="slidesContent">
+		<section class="title">
+			<div>
+				<h1>Slide show with Polymer</h1>
+				<summary>HTML experiments</summary>
+			</div>
+		</section>
+		<section>
+			<div>
+				<header>Presentation</header>
+				<content>
+					This experiment has been built with Polymer library.<br/>
+					You can control the slide show with:
+					<ul>
+						<li>Left click, Right or Down arrow and Enter key to move to the next item</li>
+						<li>Left or Up arrow to move to the previous item</li>
+						<li>'g' to display a 'Go to slide' dialog box</li>
+						<li>'m' to display slides grid and click on a slide to go to it</li>
+						<li>'n' to display a navbar at the bottom of the screen</li>
+						<li>Adding CSS class <code>preventClickToNext</code> to an element will disable go to next item for the click event on it</li>
+					</ul>
+				</content>
+			</div>
+		</section>
+		<section>
+			<div>
+				<header>Animated items</header>
+				<content>
+					You can add animated items with <code>animated-list</code> polymer element:
+					<animated-list>
+						<li><code>li</code> tags are displayed sequentially with fade-in effect</li>
+						<li>Fade-out effect is also applied when going back in the slide show</li>
+					</animated-list>
+				</content>
+			</div>
+		</section>
+		<section>
+			<div>
+				<header>Polymer paper elements support</header>
+				<content>
+					Paper elements can be added into the slides (click to next disable on the table below):<br/>
+					<table style="font-size: 0.5em" class="preventClickToNext table">
+						<thead>
+							<tr>
+								<th>Control</th>
+								<th>Example</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>Button</td>
+								<td><paper-button label="play" raisedbutton="" role="button" tabindex="0" aria-label="play"></paper-button></td>
+							</tr>
+							<tr>
+								<td>Checkbox</td>
+								<td><paper-checkbox label="Enable" role="checkbox" tabindex="0" aria-checked="false" aria-label="Enable"></paper-checkbox></td>
+							</tr>
+							<tr>
+								<td>Toggle button</td>
+								<td><paper-toggle-button label="play" role="button" aria-pressed="false" tabindex="0"></paper-toggle-button></td>
+							</tr>
+							<tr>
+								<td>Icon button</td>
+								<td><paper-icon-button icon="search" role="button" tabindex="0" aria-label="search"></paper-icon-button><paper-icon-button icon="favorite" role="button" tabindex="0" aria-label="favorite"></paper-icon-button></td>
+							</tr>
+							<tr>
+								<td>Floating action button</td>
+								<td><paper-fab icon="add" role="button" tabindex="0" aria-label="add"></paper-fab></td>
+							</tr>
+							<tr>
+								<td>Radio buttons</td>
+								<td>
+									<paper-radio-group selected="0" role="radiogroup">
+										<paper-radio-button label="Now" role="radio" tabindex="0" aria-checked="true" aria-label="Now" class="core-selected" checked=""></paper-radio-button><br>
+										<paper-radio-button label="Later" role="radio" tabindex="0" aria-checked="false" aria-label="Later"></paper-radio-button>
+									</paper-radio-group>
+								</td>
+							</tr>
+							<tr>
+								<td>Slider</td>
+								<td><paper-slider pin=""></paper-slider></td>
+							</tr>
+							<tr>
+								<td>Progress bar</td>
+								<td><paper-progress value="30"></paper-progress></td>
+							</tr>
+							<tr>
+								<td>Input</td>
+								<td><paper-input floatinglabel="" label="Input field"></paper-input></td>
+							</tr>
+						</tbody>
+					</table>
+				</content>
+			</div>
+		</section>
+		<section>
+			<div>
+				<header>Slide code declaration</header>
+				<content>
+					A general slide is declared in HTML by adding these code:
+					<div>
+						<paper-shadow z="1"></paper-shadow>
+						<pre>
+	&lt;section&gt;
+		&lt;div&gt;
+			&lt;header&gt;Title of the slide&lt;/header&gt;
+			&lt;content&gt;
+				Content of the slide
+			&lt;/content&gt;
+			&lt;footer&gt;Footer of the slide if any&lt;/footer&gt;
+		&lt;/div&gt;
+	&lt;/section&gt;
+						</pre>
+					</div>
+				</content>
+			</div>
+		</section>
+		<section>
+			<div style="background-color:green; color: white; font-weight: bold;" center>
+				But you can also add your own style for specific slides :)
+			</div>
+		</section>
+		<section class="title">
+			<div>
+				<h1>Share your feedback</h1>
+				<summary><a href="https://github.com/corwinAmbre">Github</a></summary>
+			</div>
+		</section>
+	</core-animated-pages>
+	
+	<!-- Bottom navbar -->
+	<div flex id="nav-bar">
+		<paper-shadow z="5"></paper-shadow>
+		
+		<div flex id="leftContainer">
+			<paper-fab class="mini" icon="arrow-back" onclick="slides.previous()"></paper-fab>
+			<paper-fab class="mini" icon="arrow-forward" onclick="slides.next()"></paper-fab>
+		</div>
+		
+		<div flex id="rightContainer">
+			<span id="currentSlide"></span> / <span id="maxSlide"></span><br/>
+			<paper-progress value="0" id="currentSlideProgressBar"></paper-progress>
+		</div>
+	</div>
+	
+	<!-- Go to slide dialog -->
+	<paper-dialog id="dialogGoToSlide" heading="Go to slide">
+		<paper-input type="number" label="Go to slide" floatinglabel min="1" max="1" id="gotoSlideNumber"></paper-input>
+		<paper-button label="Cancel" raisedbutton dismissive></paper-button>
+		<paper-button label="OK" raisedbutton affirmative default onclick="slides.gotoSlide();"></paper-button>
+	</paper-dialog>
+	
+	<!-- Slide selection grid, content will be initialize by copying contents of #slidesContent -->
+	<div flex id="slideCarousel" class="hidden">
+	</div>
+		
+</body>
+</html>
