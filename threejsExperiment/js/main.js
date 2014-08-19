@@ -1,3 +1,14 @@
+/**
+* Main javascript file for the experiment.
+* Define scene and controls.
+*
+* @author Sebastien Domergue: https://github.com/corwinAmbre
+* @version 0.1
+*/
+
+/**
+* Periodic table - used as static contents for the cards
+*/
 var table = [
 	"H", "Hydrogen", "1.00794", 1, 1,
 	"He", "Helium", "4.002602", 18, 1,
@@ -119,12 +130,22 @@ var table = [
 	"Uuo", "Ununoctium", "(294)", 18, 7
 ];
 
+/**
+* General objects of the scene
+*/
 var camera, scene, renderer;
 var controls;
 
+/**
+* objects array contains scene elements. This array is always the current state of the scene elements.
+* helix array contains target position of the objects after loading (for animation purpose). object[n] will move to helix[n] position to have the helix placement.
+*/
 var objects = [];
 var helix = [];
 
+/**
+* Scene init method
+*/
 function init() {
 	camera = new THREE.PerspectiveCamera( 40, window.innerWidth / window.innerHeight, 1, 10000 );
 	camera.position.z = 0;
@@ -132,9 +153,7 @@ function init() {
 	scene = new THREE.Scene();
 
 	// Initialization of the elements
-
 	for ( var i = 0; i < table.length; i += 5 ) {
-
 		var element = document.createElement( 'div' );
 		element.id = 'elt-' + (i/5);
 		element.className = 'element';
@@ -155,6 +174,7 @@ function init() {
 		details.innerHTML = table[ i + 1 ] + '<br>' + table[ i + 2 ];
 		element.appendChild( details );
 
+		// First, all objects are at the same position and not visible due to scale
 		var object = new THREE.CSS3DObject( element );
 		object.position.x = 0;
 		object.position.y = 0;
@@ -162,6 +182,8 @@ function init() {
 		object.scale.x = 0;
 		object.scale.y = 0;
 		
+		// Define onclick handler for each card.
+		// When user click on a card, camera will look at it. Camera movement will be animated
 		$(element).click(function () {
 			var index = this.id.split("-")[1];
 			var targetPosition = new THREE.Vector3().copy(objects[index].position).normalize();
@@ -175,17 +197,12 @@ function init() {
 				})
 				.start();
 		});
-		
 		scene.add( object );
-
 		objects.push( object );
-
 	}
 
-	// helix
-
+	// helix definition
 	var vector = new THREE.Vector3();
-
 	for ( var i = 0, l = objects.length; i < l; i ++ ) {
 
 		var phi = i * 0.175 + Math.PI;
@@ -201,9 +218,7 @@ function init() {
 		vector.z = -object.position.z * 2;
 
 		object.lookAt( vector );
-
 		helix.push( object );
-
 	}
 
 	renderer = new THREE.CSS3DRenderer();
@@ -238,6 +253,11 @@ function init() {
 
 }
 
+/**
+* Generic transformation method. Will move objects to targets.
+* @param targets is an array with a length at least equals to objects.length. object[n] position and rotation will become targets[n]
+* @param duration of the animation in ms 
+*/
 function transform( targets, duration ) {
 
 	TWEEN.removeAll();
@@ -266,21 +286,24 @@ function transform( targets, duration ) {
 
 }
 
+/**
+* Get camera look at vector, normalized
+*/
 function getCameraCurrentLookAt() {
 	var vector = new THREE.Vector3( 0, 0, -1 );
 	vector.applyQuaternion( camera.quaternion );
 	return vector.normalize();
 }
 
+/**
+* Methods for scene handlind and updating
+*/
 function onWindowResize() {
-
 	camera.aspect = window.innerWidth / window.innerHeight;
 	camera.updateProjectionMatrix();
 
 	renderer.setSize( window.innerWidth, window.innerHeight );
-
 	render();
-
 }
 
 function animate() {
@@ -290,11 +313,10 @@ function animate() {
 }
 
 function render() {
-
 	renderer.render( scene, camera );
-
 }
 
+// When ready launch the init method
 $(document).ready(function() {
 	init();
 	animate();
