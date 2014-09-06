@@ -32,6 +32,10 @@ var slides = {
 			slides.mode = -1;
 			window.addEventListener("message", slides.receiveMessage, false);
 			slides.slides.onclick = null;
+			if(window.location.search.indexOf("currentSlide=") > -1) {
+				var slideToInit = window.location.search.substring(window.location.search.indexOf("currentSlide=") + 13);
+				slides.changeSlideTo(slideToInit);
+			}
 		} else {
 			$(document).keydown(function(event) {
 				switch(event.which) {
@@ -207,7 +211,7 @@ var slides = {
 	},
 	
 	presenterMode: function() {
-		slides.client = window.open(window.location + "?presenterMode=client", "slideshowClient", "menubar=no, titlebar=no");
+		slides.client = window.open(window.location + "?presenterMode=client&currentSlide=" + slides.slides.selected, "slideshowClient", "menubar=no, titlebar=no");
 		slides.mode = 1;
 	},
 	
