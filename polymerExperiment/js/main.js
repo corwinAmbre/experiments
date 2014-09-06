@@ -10,6 +10,9 @@ var slides = {
 	slides: null,
 	// Max index of slides
 	max: -1,
+	// Presenter mode: 0 for standalone, 1 for server (or any positive), -1 for client (or any negative)
+	mode: 0,
+	client: null,
 
 	/**
 	* Initialization method.
@@ -25,39 +28,50 @@ var slides = {
 		slides.max = $("core-animated-pages section").length - 1;
 		$("#maxSlide").text(slides.max + 1);
 		$("#gotoSlideNumber").attr("max", slides.max + 1);
-		$(document).keydown(function(event) {
-			switch(event.which) {
-				case 37: // Left arrow key
-				case 38: // Up arrow key --> both keys are used to go to previous state
-					slides.previous();
-					break;
-				case 13: // Enter key
-				case 39: // Right arrow key
-				case 40: // Down arrow key --> all keys are used to go to next state (click is also used to go to the next state but is bound with "onclick" on the DOM)
-					slides.next();
-					break;
-				case 71: // 'G' key is used to open dialog for "Go-to slide"
-					document.querySelector("#dialogGoToSlide").toggle();
-					break;
-				case 77: // 'M' key is used to toggle grid slide selection
-					// Little tricks since polymer init is done after init methods.
-					// We want that every elements of the slides to be visible when we select a slide
-					$("#slideCarousel").find("animated-list li").css("opacity", 1);
-					// Force overflow since visible is setup in style attribute by polymer
-					$("#slideCarousel section").attr("style","position: relative;");
-					$("#slideCarousel").removeClass("hidden");
-					break;
-				case 78: // 'N' key is used to toggle nav-bar at the bottom of the page
-					$("#nav-bar").toggle();
-					break;
-				default:
-			}
-		});
+		if(window.location.search.indexOf("presenterMode=client") > -1) {
+			slides.mode = -1;
+			window.addEventListener("message", slides.receiveMessage, false);
+			slides.slides.onclick = null;
+		} else {
+			$(document).keydown(function(event) {
+				switch(event.which) {
+					case 37: // Left arrow key
+					case 38: // Up arrow key --> both keys are used to go to previous state
+						slides.previous();
+						break;
+					case 13: // Enter key
+					case 39: // Right arrow key
+					case 40: // Down arrow key --> all keys are used to go to next state (click is also used to go to the next state but is bound with "onclick" on the DOM)
+						slides.next();
+						break;
+					case 71: // 'G' key is used to open dialog for "Go-to slide"
+						document.querySelector("#dialogGoToSlide").toggle();
+						break;
+					case 77: // 'M' key is used to toggle grid slide selection
+						// Little tricks since polymer init is done after init methods.
+						// We want that every elements of the slides to be visible when we select a slide
+						$("#slideCarousel").find("animated-list li").css("opacity", 1);
+						// Force overflow since visible is setup in style attribute by polymer
+						$("#slideCarousel section").attr("style","position: relative;");
+						$("#slideCarousel").removeClass("hidden");
+						break;
+					case 78: // 'N' key is used to toggle nav-bar at the bottom of the page
+						$("#nav-bar").toggle();
+						break;
+					case 80: // 'P' key is used to start the presenter mode
+						if(slides.mode == 0) {
+							slides.presenterMode();
+						}
+						break;
+					default:
+				}
+			});
+			slides.initSlideCarousel();
+		}
 		$(".preventClickToNext").click(function(event) {
 			event.stopPropagation();
 		});
 		slides.updateNavBar();
-		slides.initSlideCarousel();
 	},
 	
 	/**
@@ -118,6 +132,9 @@ var slides = {
 	* @see updateNavBar
 	*/
 	changeSlideTo: function (slideNumber) {
+		if(slides.mode > 0) {
+			slides.client.postMessage("goto" + slideNumber, location.protocol + location.hostname + (location.port ? (":"+location.port) : ""));
+		}
 		if(slideNumber >= 0 && slideNumber <= slides.max) {
 			slides.slides.selected = slideNumber;
 		}
@@ -142,6 +159,9 @@ var slides = {
 	* @see changeSlide
 	*/
 	next: function () {
+		if(slides.mode > 0) {
+			slides.client.postMessage("next", location.protocol + location.hostname + (location.port ? (":"+location.port) : ""));
+		}
 		var currentSlide = slides.currentSlide();
 		var animatedLists = currentSlide.querySelectorAll('animated-list');
 		var moveToNextSlide = true;
@@ -166,6 +186,9 @@ var slides = {
 	* @see changeSlide
 	*/
 	previous: function () {
+		if(slides.mode > 0) {
+			slides.client.postMessage("previous", location.protocol + location.hostname + (location.port ? (":"+location.port) : ""));
+		}
 		var currentSlide = slides.currentSlide();
 		var animatedLists = currentSlide.querySelectorAll('animated-list');
 		var moveToNextSlide = true;
@@ -180,6 +203,25 @@ var slides = {
 		}
 		if (moveToNextSlide) {
 			slides.changeSlide(-1);
+		}
+	},
+	
+	presenterMode: function() {
+		slides.client = window.open(window.location + "?presenterMode=client", "slideshowClient", "menubar=no, titlebar=no");
+		slides.mode = 1;
+	},
+	
+	receiveMessage: function(event) {
+		if (event.origin.indexOf(location.hostname) > -1) {
+			if(event.data == "next") {
+				slides.next();
+			}
+			if(event.data == "previous") {
+				slides.previous();
+			}
+			if(event.data.indexOf("goto") > -1) {
+				slides.changeSlideTo(event.data.substring(4));
+			}
 		}
 	}
 
